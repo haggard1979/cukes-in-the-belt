@@ -11,6 +11,10 @@
 
   <artifactId>cukes-in-the-belt-core</artifactId>
   <name>Cukes in the Belt :: Core</name>
+  <description>
+    Runs Cucumber features inside Jakarta EE containers with Arquillian and JUnit 5:
+    the JUnit 5 base class, the Arquillian extension and the Cucumber integration.
+  </description>
 
   <dependencies>
     <!-- Cucumber -->

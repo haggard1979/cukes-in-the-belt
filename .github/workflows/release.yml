@@ -1,0 +1,60 @@
+name: Release
+
+# Publishes cukes-in-the-belt-parent and cukes-in-the-belt-core to Maven Central
+# when a GitHub release with a tag like v1.2.3 is published. See RELEASING.md.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish to Maven Central
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # secrets live in this environment; it can require a manual approval
+    environment: maven-central
+    steps:
+      - name: Version from tag
+        id: version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Release tag '$TAG' does not look like v1.2.3"
+            exit 1
+          fi
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          server-id: central
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_PASSWORD
+
+      - name: Set version ${{ steps.version.outputs.version }}
+        run: >
+          mvn --batch-mode --no-transfer-progress versions:set
+          -DnewVersion=${{ steps.version.outputs.version }}
+          -DgenerateBackupPoms=false -DprocessAllModules=true
+
+      # builds and tests everything again (TomEE, Weld, WildFly), signs and uploads
+      # parent and core; the deployment is published once Central validated it
+      - name: Build and publish
+        run: mvn --batch-mode --no-transfer-progress -Prelease deploy
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

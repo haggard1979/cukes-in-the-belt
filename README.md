@@ -31,18 +31,19 @@ For JUnit 4, TestNG or `javax.*` use CukeSpace 1.x, see
 
 ## Installation
 
-```bash
-mvn install
-```
+Releases are published to Maven Central:
 
 ```xml
 <dependency>
     <groupId>at.tbloder</groupId>
     <artifactId>cukes-in-the-belt-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
+
+For the current development version, build it with `mvn install` and use
+`1.0.0-SNAPSHOT`. How releases are made: [RELEASING.md](RELEASING.md).
 
 `cukes-in-the-belt-core` brings Cucumber (`cucumber-core`, `cucumber-java`), JUnit 5
 and `arquillian-junit5-container`. Add the Arquillian adapter of your
