@@ -1,6 +1,8 @@
 Cukes in the Belt
 =================
 
+[![Build](https://github.com/haggard1979/cukes-in-the-belt/actions/workflows/build.yml/badge.svg)](https://github.com/haggard1979/cukes-in-the-belt/actions/workflows/build.yml)
+
 Cukes in the Belt runs [Cucumber][] features inside the Jakarta EE container of
 your choice using [Arquillian][] and JUnit 5. Step definitions are served by
 the container: they can use `@Inject`, `@EJB`, `@Resource`,
