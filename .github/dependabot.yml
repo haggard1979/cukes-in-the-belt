@@ -15,8 +15,9 @@ updates:
       # so it uses nothing newer (CDI 4.1 = EE 11, CDI 5 = EE 12)
       - dependency-name: jakarta.platform:jakarta.jakartaee-api
         update-types: [version-update:semver-major]
+      # CDI 4.1 is a minor version but belongs to EE 11: only patch updates (4.0.x)
       - dependency-name: jakarta.enterprise:jakarta.enterprise.cdi-api
-        update-types: [version-update:semver-major]
+        update-types: [version-update:semver-major, version-update:semver-minor]
       # Weld 7 implements CDI 5 and needs its API; arquillian-weld-embedded follows Weld
       - dependency-name: org.jboss.weld:weld-core-impl
         update-types: [version-update:semver-major]
