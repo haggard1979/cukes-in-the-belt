@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.github.cukespace</groupId>
-    <artifactId>cukespace-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <groupId>at.tbloder</groupId>
+    <artifactId>cukes-in-the-belt-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cukespace-core</artifactId>
-  <name>Cukes in Space! :: Core</name>
+  <artifactId>cukes-in-the-belt-core</artifactId>
+  <name>Cukes in the Belt :: Core</name>
 
   <dependencies>
     <!-- Cucumber -->

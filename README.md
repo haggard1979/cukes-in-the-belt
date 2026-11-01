@@ -1,12 +1,16 @@
-Cukes in Space!
-===============
+Cukes in the Belt
+=================
 
-Cukes in Space! runs [Cucumber][] features inside the Jakarta EE container of
+Cukes in the Belt runs [Cucumber][] features inside the Jakarta EE container of
 your choice using [Arquillian][] and JUnit 5. Step definitions are served by
 the container: they can use `@Inject`, `@EJB`, `@Resource`,
 `@ArquillianResource`, ...
 
-Version 2 requires:
+It is the successor of [Cukes in Space!][cukespace] (CukeSpace), rewritten
+for current Java, Jakarta EE, Cucumber and JUnit versions. The Git history of
+CukeSpace is kept in this repository.
+
+Requirements:
 
 | | Version |
 |---|---|
@@ -16,11 +20,12 @@ Version 2 requires:
 | Arquillian | 1.10+ (`arquillian-junit5-container`) |
 | Jakarta EE | 10+ (`jakarta.*`) |
 
-JUnit 4, TestNG and `javax.*` are supported by the 1.x versions only, see
-[Migrating from 1.x](#migrating-from-1x).
+For JUnit 4, TestNG or `javax.*` use CukeSpace 1.x, see
+[Migrating from CukeSpace](#migrating-from-cukespace).
 
 [Arquillian]: https://arquillian.org/
 [Cucumber]: https://cucumber.io/docs/installation/java/
+[cukespace]: https://github.com/cukespace/cukespace
 
 ## Installation
 
@@ -30,25 +35,25 @@ mvn install
 
 ```xml
 <dependency>
-    <groupId>com.github.cukespace</groupId>
-    <artifactId>cukespace-core</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <groupId>at.tbloder</groupId>
+    <artifactId>cukes-in-the-belt-core</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <scope>test</scope>
 </dependency>
 ```
 
-`cukespace-core` brings Cucumber (`cucumber-core`, `cucumber-java`), JUnit 5
+`cukes-in-the-belt-core` brings Cucumber (`cucumber-core`, `cucumber-java`), JUnit 5
 and `arquillian-junit5-container`. Add the Arquillian adapter of your
 container (WildFly, TomEE, Payara, Weld embedded, ...) as usual.
 
 ## Writing features
 
-Extend `CukeSpaceTest`, create the deployment and write the steps directly in
+Extend `CukesTest` (package `at.tbloder.cukes`), create the deployment and write the steps directly in
 the test class:
 
 ```java
 @CucumberOptions(features = "classpath:features/cukes-in-belly.feature")
-class CukesInBellyTest extends CukeSpaceTest {
+class CukesInBellyTest extends CukesTest {
 
     @Deployment
     static WebArchive deployment() {
@@ -79,14 +84,14 @@ class CukesInBellyTest extends CukeSpaceTest {
 }
 ```
 
-`CukeSpaceTest` contributes one JUnit test, `Cucumber features`, which runs
+`CukesTest` contributes one JUnit test, `Cucumber features`, which runs
 all scenarios. Arquillian executes it like any other test method: inside the
 container, or on the client with `@RunAsClient` / `@Deployment(testable = false)`.
 When some scenarios do not pass, the test fails with a `MultipleFailuresError`
 listing every failed scenario (`ScenarioFailedError`) and the snippets for
 undefined steps.
 
-If the test can't extend `CukeSpaceTest`, run the features yourself:
+If the test can't extend `CukesTest`, run the features yourself:
 
 ```java
 @ExtendWith(ArquillianExtension.class)
@@ -94,7 +99,7 @@ If the test can't extend `CukeSpaceTest`, run the features yourself:
 class BellyTest {
     @Test
     void features() {
-        CukeSpace.runFeatures(this);
+        Cukes.runFeatures(this);
     }
 }
 ```
@@ -118,12 +123,12 @@ Prefer `@Inject` for session beans in glue classes: whether `@EJB` and
 `@Resource` are injected into non-contextual instances depends on the server
 (WildFly does, TomEE does not). In the test class itself they always work.
 
-Glue classes don't have to be added to the deployment: CukeSpace adds the ones
+Glue classes don't have to be added to the deployment: Cukes in the Belt adds the ones
 the deployment lacks.
 
 ### Configuration
 
-`@CucumberOptions` (`com.github.cukespace.CucumberOptions`) supports
+`@CucumberOptions` (`at.tbloder.cukes.CucumberOptions`) supports
 `features`, `glue`, `extraGlue`, `tags`, `plugin`, `name`, `dryRun`,
 `monochrome`, `snippets` and `objectFactory`. Without features, the package
 of the test class is used (`classpath:com/example`). Without plugins,
@@ -154,13 +159,13 @@ remote server, use absolute paths or run the reports on the client.
 
 ### Deployments
 
-For a `WebArchive` or an `EnterpriseArchive`, CukeSpace adds to the archive
+For a `WebArchive` or an `EnterpriseArchive`, Cukes in the Belt adds to the archive
 holding the test class:
 
 * the feature files, copied by the client (no classpath scanning in the
   server, which is unreliable with VFS and nested archives),
 * the list of glue classes and the missing glue classes,
-* the Cucumber jars and the container side of CukeSpace.
+* the Cucumber jars and the container side of Cukes in the Belt.
 
 A `JavaArchive` deployment is left as it is: it is used by embedded containers
 such as Weld embedded, which run with the class path of the test.
@@ -180,12 +185,12 @@ public class Screenshots {
 }
 ```
 
-Events (package `com.github.cukespace.api.event`): `BeforeScenario`,
+Events (package `at.tbloder.cukes.api.event`): `BeforeScenario`,
 `AfterScenario`, `BeforeStep`, `AfterStep`.
 
 ## Examples
 
-* `examples`: TomEE 10 embedded, `WebArchive` deployments: steps in the test
+* `examples-tomee`: TomEE 10 embedded, `WebArchive` deployments: steps in the test
   class using CDI and EJB, a Portuguese feature with separate glue, a
   `@RunAsClient` test calling a servlet over HTTP, tags configured in
   `arquillian.xml`.
@@ -194,20 +199,29 @@ Events (package `com.github.cukespace.api.event`): `BeforeScenario`,
   steps in the test class, glue with `@EJB` and `@Resource`, an
   `EnterpriseArchive`, a `@RunAsClient` test.
 * `examples-weld`: Weld embedded, `JavaArchive` deployments: steps in the test
-  class, a German feature with glue in another package, failure reporting and
-  Arquillian events.
+  class, a German feature with glue in another package, steps of the test class
+  combined with glue of a sub package (default glue) using regular expressions,
+  failure reporting and Arquillian events.
 
-## Migrating from 1.x
+## Migrating from CukeSpace
 
-| 1.x | 2.x |
+Replace the dependency `com.github.cukespace:cukespace-core` by
+`at.tbloder:cukes-in-the-belt-core`, then:
+
+| CukeSpace 1.x | Cukes in the Belt |
 |---|---|
-| `@RunWith(CukeSpace.class)` / `@RunWith(ArquillianCucumber.class)` | `extends CukeSpaceTest`, or `@ExtendWith(ArquillianExtension.class)` + `CukeSpace.runFeatures(this)` |
+| `@RunWith(CukeSpace.class)` / `@RunWith(ArquillianCucumber.class)` | `extends CukesTest`, or `@ExtendWith(ArquillianExtension.class)` + `Cukes.runFeatures(this)` |
 | TestNG `extends CukeSpace` | not supported anymore |
-| `@cucumber.api.CucumberOptions`, `@Features`, `@Glues`, `@Tags` | `@com.github.cukespace.CucumberOptions(features, glue, extraGlue, tags)` |
+| `@cucumber.api.CucumberOptions`, `@Features`, `@Glues`, `@Tags` | `@at.tbloder.cukes.CucumberOptions(features, glue, extraGlue, tags)` |
 | `cucumber.api.java.en.*`, `cucumber.api.java.*` | `io.cucumber.java.en.*`, `io.cucumber.java.*` |
 | regular expressions in step annotations | still supported, Cucumber expressions recommended |
 | `arquillian.xml`: `options`, `featureHome`, `tempDir`, `objectFactory` | Cucumber properties (`cucumber.filter.tags`, `cucumber.features`, `cucumber.object-factory`, ...) |
 | `arquillian.xml`: `report`, `reportDirectory`, `generateDocs` (cucumber-reporting, cukedoctor) | Cucumber plugins, e.g. `cucumber.plugin=html:target/cucumber.html` |
 | Arquillian Persistence integration (`persistenceEventsActivated`) | removed (the extension is not maintained) |
 | `@Lambda` / cucumber-java8 | removed |
-| `cucumber.runtime.arquillian.api.event.*` | `com.github.cukespace.api.event.*` |
+| `cucumber.runtime.arquillian.api.event.*` | `at.tbloder.cukes.api.event.*` |
+
+## License
+
+MIT, see [LICENSE](LICENSE). Copyright (c) 2026 Thomas Bloder.
+Based on Cukes in Space! by Logan McGrath, Romain Manni-Bucau and contributors.
