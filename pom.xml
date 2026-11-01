@@ -21,6 +21,7 @@
     <module>examples-tomee</module>
     <module>examples-weld</module>
     <module>examples-wildfly</module>
+    <module>coverage</module>
   </modules>
 
   <properties>
@@ -47,6 +48,10 @@
     <maven-install.version>3.1.4</maven-install.version>
     <maven-deploy.version>3.1.4</maven-deploy.version>
     <maven-dependency.version>3.11.0</maven-dependency.version>
+    <jacoco.version>0.8.16</jacoco.version>
+
+    <!-- code quality -->
+    <errorprone.version>2.51.0</errorprone.version>
   </properties>
 
   <licenses>
@@ -97,6 +102,24 @@
           <version>${maven-compiler.version}</version>
           <configuration>
             <parameters>true</parameters>
+            <showWarnings>true</showWarnings>
+            <compilerArgs>
+              <!-- every javac lint warning fails the build (processing: Error Prone runs as plugin) -->
+              <arg>-Xlint:all,-processing</arg>
+              <arg>-Werror</arg>
+              <!-- Error Prone: bug patterns at compile time, its warnings fail the build too -->
+              <arg>-XDcompilePolicy=simple</arg>
+              <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
+              <arg>--should-stop=ifError=FLOW</arg>
+              <arg>-Xplugin:ErrorProne</arg>
+            </compilerArgs>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_core</artifactId>
+                <version>${errorprone.version}</version>
+              </path>
+            </annotationProcessorPaths>
           </configuration>
         </plugin>
         <plugin>
@@ -126,6 +149,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
           <version>${maven-install.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

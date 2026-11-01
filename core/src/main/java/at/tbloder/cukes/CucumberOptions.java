@@ -29,61 +29,61 @@ import java.lang.annotation.Target;
 public @interface CucumberOptions {
 
     /**
-     * @return feature files or directories, e.g. {@code classpath:features/belly.feature}
-     *         or {@code src/test/resources/features}. Line filters such as
-     *         {@code classpath:features/belly.feature:12} are supported.
+     * Feature files or directories, e.g. {@code classpath:features/belly.feature}
+     * or {@code src/test/resources/features}. Line filters such as
+     * {@code classpath:features/belly.feature:12} are supported.
      */
     String[] features() default {};
 
     /**
-     * @return packages to scan for step definitions and hooks, e.g. {@code com.example.steps}.
-     *         Replaces the default glue (the package of the test class).
+     * Packages to scan for step definitions and hooks, e.g. {@code com.example.steps}.
+     * Replaces the default glue (the package of the test class).
      */
     String[] glue() default {};
 
     /**
-     * @return packages to scan for step definitions in addition to the
-     *         package of the test class.
+     * Packages to scan for step definitions in addition to the
+     * package of the test class.
      */
     String[] extraGlue() default {};
 
     /**
-     * @return a Cucumber tag expression, e.g. {@code "@smoke and not @wip"}.
+     * A Cucumber tag expression, e.g. {@code "@smoke and not @wip"}.
      */
     String tags() default "";
 
     /**
-     * @return Cucumber plugins, e.g. {@code "html:target/cucumber.html"}.
-     *         Defaults to {@code pretty} when no plugin is configured at all.
+     * Cucumber plugins, e.g. {@code "html:target/cucumber.html"}.
+     * Defaults to {@code pretty} when no plugin is configured at all.
      */
     String[] plugin() default {};
 
     /**
-     * @return regular expressions; only scenarios whose name matches are run.
+     * Regular expressions; only scenarios whose name matches are run.
      */
     String[] name() default {};
 
     /**
-     * @return {@code true} to check that every step has a definition without executing it.
+     * {@code true} to check that every step has a definition without executing it.
      */
     boolean dryRun() default false;
 
     /**
-     * @return {@code true} to disable colored console output.
+     * {@code true} to disable colored console output.
      */
     boolean monochrome() default false;
 
     /**
-     * @return the format of suggested snippets for undefined steps.
+     * The format of suggested snippets for undefined steps.
      */
     SnippetType snippets() default SnippetType.UNDERSCORE;
 
     /**
-     * @return a custom Cucumber object factory. By default Cukes in the Belt uses its own
-     *         factory: the test instance serves the steps declared in the test class
-     *         and all other glue classes are created per scenario and enriched by
-     *         Arquillian ({@code @Inject}, {@code @EJB}, {@code @Resource},
-     *         {@code @ArquillianResource}, ...).
+     * A custom Cucumber object factory. By default Cukes in the Belt uses its own
+     * factory: the test instance serves the steps declared in the test class
+     * and all other glue classes are created per scenario and enriched by
+     * Arquillian ({@code @Inject}, {@code @EJB}, {@code @Resource},
+     * {@code @ArquillianResource}, ...).
      */
     Class<? extends ObjectFactory> objectFactory() default NoObjectFactory.class;
 

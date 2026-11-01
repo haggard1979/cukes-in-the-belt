@@ -51,6 +51,8 @@ public final class DeploymentIndex {
     }
 
     /**
+     * Returns the index when the test runs inside a deployment prepared by the client.
+     *
      * @param loader the class loader of the deployment
      * @return the index when the test runs inside a deployment prepared by the client
      */
@@ -117,6 +119,8 @@ public final class DeploymentIndex {
         }
 
         /**
+         * Returns the class path resource inside the deployment.
+         *
          * @return the class path resource inside the deployment
          */
         public String getPath() {
@@ -124,6 +128,8 @@ public final class DeploymentIndex {
         }
 
         /**
+         * Returns the original URI on the client, used in reports and line filters.
+         *
          * @return the original URI on the client, used in reports and line filters
          */
         public URI getUri() {

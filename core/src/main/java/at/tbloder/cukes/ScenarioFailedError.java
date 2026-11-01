@@ -5,7 +5,7 @@ package at.tbloder.cukes;
  * original failure are kept, so the error can always be serialized from the
  * container back to the client.
  */
-public class ScenarioFailedError extends AssertionError {
+public final class ScenarioFailedError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
     public ScenarioFailedError(final String message, final Throwable original) {

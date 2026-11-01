@@ -205,6 +205,17 @@ Events (package `at.tbloder.cukes.api.event`): `BeforeScenario`,
   combined with glue of a sub package (default glue) using regular expressions,
   failure reporting and Arquillian events.
 
+## Code quality
+
+* Compiler warnings fail the build (`-Xlint:all -Werror`), so do the bug
+  patterns of [Error Prone](https://errorprone.info/).
+* JaCoCo measures `core` with its unit tests and the examples running in the
+  test JVM (TomEE, Weld): `coverage/target/site/jacoco-aggregate/index.html`.
+  The CI shows the numbers in the job summary.
+* [CodeQL](https://codeql.github.com/) analyzes Java and the workflows on every
+  pull request and weekly.
+* Dependabot proposes updates of the Maven dependencies and GitHub Actions weekly.
+
 ## Migrating from CukeSpace
 
 Replace the dependency `com.github.cukespace:cukespace-core` by

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>at.tbloder</groupId>
+    <artifactId>cukes-in-the-belt-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cukes-in-the-belt-coverage</artifactId>
+  <name>Cukes in the Belt :: Coverage</name>
+  <packaging>pom</packaging>
+
+  <description>
+    JaCoCo report of the core classes, combining the unit tests of core with the
+    examples running in the test JVM (TomEE embedded, Weld embedded), which
+    execute the container side of core. WildFly runs in its own JVM and is not
+    measured. Report: target/site/jacoco-aggregate/index.html
+  </description>
+
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>at.tbloder</groupId>
+      <artifactId>cukes-in-the-belt-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>at.tbloder</groupId>
+      <artifactId>cukes-in-the-belt-examples-tomee</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>at.tbloder</groupId>
+      <artifactId>cukes-in-the-belt-examples-weld</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>at/tbloder/cukes/examples/**</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

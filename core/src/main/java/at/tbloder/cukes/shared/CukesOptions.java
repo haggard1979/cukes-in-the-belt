@@ -33,6 +33,8 @@ public final class CukesOptions {
     }
 
     /**
+     * Returns the Cucumber properties: {@code arquillian.xml} overridden by {@code cucumber.properties}, environment variables and system properties (in this order).
+     *
      * @param arquillianProperties the properties of the {@code cucumber} extension in {@code arquillian.xml}
      * @return the Cucumber properties: {@code arquillian.xml} overridden by {@code cucumber.properties},
      *         environment variables and system properties (in this order)
@@ -71,6 +73,8 @@ public final class CukesOptions {
     }
 
     /**
+     * Returns the runtime options.
+     *
      * @param testClass  the test class, possibly annotated with {@link CucumberOptions}
      * @param properties Cucumber properties overriding the annotation
      * @return the runtime options
