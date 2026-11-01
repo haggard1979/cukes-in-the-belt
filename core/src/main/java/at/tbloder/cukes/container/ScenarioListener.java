@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Collects the failed scenarios and forwards the Cucumber events as Arquillian events.
@@ -32,7 +33,7 @@ final class ScenarioListener implements ConcurrentEventListener {
     private final List<ScenarioFailedError> failures = Collections.synchronizedList(new ArrayList<>());
     private final Map<Object, Set<String>> undefinedSteps = new ConcurrentHashMap<>();
     private final Set<String> snippets = Collections.synchronizedSet(new LinkedHashSet<>());
-    private volatile int scenarios;
+    private final AtomicInteger scenarios = new AtomicInteger();
 
     @Override
     public void setEventPublisher(final EventPublisher publisher) {
@@ -40,7 +41,7 @@ final class ScenarioListener implements ConcurrentEventListener {
         publisher.registerHandlerFor(TestStepStarted.class, this::testStepStarted);
         publisher.registerHandlerFor(TestStepFinished.class, this::testStepFinished);
         publisher.registerHandlerFor(TestCaseFinished.class, this::testCaseFinished);
-        publisher.registerHandlerFor(SnippetsSuggestedEvent.class, e -> snippets.addAll(e.getSnippets()));
+        publisher.registerHandlerFor(SnippetsSuggestedEvent.class, e -> snippets.addAll(e.getSuggestion().getSnippets()));
     }
 
     List<ScenarioFailedError> getFailures() {
@@ -48,7 +49,7 @@ final class ScenarioListener implements ConcurrentEventListener {
     }
 
     int getScenarioCount() {
-        return scenarios;
+        return scenarios.get();
     }
 
     Set<String> getSnippets() {
@@ -83,7 +84,7 @@ final class ScenarioListener implements ConcurrentEventListener {
     }
 
     private void testCaseFinished(final TestCaseFinished event) {
-        scenarios++;
+        scenarios.incrementAndGet();
         final TestCase testCase = event.getTestCase();
         final Result result = event.getResult();
         final Set<String> undefined = undefinedSteps.remove(testCase.getId());

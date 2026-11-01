@@ -13,8 +13,10 @@ import java.io.IOException;
  */
 @WebServlet("/belly")
 public class BellyServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
     @Inject
-    private Belly belly;
+    private transient Belly belly;
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {

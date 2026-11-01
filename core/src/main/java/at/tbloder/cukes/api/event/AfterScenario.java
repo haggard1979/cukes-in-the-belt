@@ -17,6 +17,8 @@ public final class AfterScenario extends ScenarioEvent {
     }
 
     /**
+     * Returns the Cucumber status, e.g. {@code PASSED}, {@code FAILED}, {@code UNDEFINED}.
+     *
      * @return the Cucumber status, e.g. {@code PASSED}, {@code FAILED}, {@code UNDEFINED}
      */
     public String getStatus() {
@@ -24,6 +26,8 @@ public final class AfterScenario extends ScenarioEvent {
     }
 
     /**
+     * Returns the failure of the scenario or {@code null}.
+     *
      * @return the failure of the scenario or {@code null}
      */
     public Throwable getError() {

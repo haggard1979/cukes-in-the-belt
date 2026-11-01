@@ -3,7 +3,7 @@ package at.tbloder.cukes.examples.tomee.glue.steps;
 import at.tbloder.cukes.examples.tomee.Belly;
 import at.tbloder.cukes.examples.tomee.CukeService;
 import io.cucumber.java.pt.Dado;
-import io.cucumber.java.pt.Então;
+import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -38,7 +38,7 @@ public class PassosPepino {
         servico.eat(pepinos);
     }
 
-    @Então("a barriga contém {int} pepinos")
+    @Entao("a barriga contém {int} pepinos")
     public void contem(final int pepinos) {
         assertEquals(pepinos, barriga.getCukes());
     }

@@ -18,6 +18,8 @@ public final class AfterStep extends StepEvent {
     }
 
     /**
+     * Returns the Cucumber status, e.g. {@code PASSED}, {@code FAILED}, {@code SKIPPED}.
+     *
      * @return the Cucumber status, e.g. {@code PASSED}, {@code FAILED}, {@code SKIPPED}
      */
     public String getStatus() {
@@ -25,6 +27,8 @@ public final class AfterStep extends StepEvent {
     }
 
     /**
+     * Returns the failure of the step or {@code null}.
+     *
      * @return the failure of the step or {@code null}
      */
     public Throwable getError() {

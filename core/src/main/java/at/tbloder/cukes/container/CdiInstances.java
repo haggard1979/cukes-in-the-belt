@@ -30,6 +30,8 @@ final class CdiInstances {
     }
 
     /**
+     * Returns the CDI instance factory or {@code null} without an active CDI container.
+     *
      * @return the CDI instance factory or {@code null} without an active CDI container
      */
     static CdiInstances lookup() {

@@ -23,6 +23,8 @@ public final class Cukes {
     }
 
     /**
+     * Returns {@code true} when Cukes in the Belt handles the deployment of this class.
+     *
      * @param testClass a test class
      * @return {@code true} when Cukes in the Belt handles the deployment of this class
      */
