@@ -199,8 +199,9 @@ Events (package `at.tbloder.cukes.api.event`): `BeforeScenario`,
   steps in the test class, glue with `@EJB` and `@Resource`, an
   `EnterpriseArchive`, a `@RunAsClient` test.
 * `examples-weld`: Weld embedded, `JavaArchive` deployments: steps in the test
-  class, a German feature with glue in another package, failure reporting and
-  Arquillian events.
+  class, a German feature with glue in another package, steps of the test class
+  combined with glue of a sub package (default glue) using regular expressions,
+  failure reporting and Arquillian events.
 
 ## Migrating from CukeSpace
 
@@ -222,5 +223,5 @@ Replace the dependency `com.github.cukespace:cukespace-core` by
 
 ## License
 
-MIT, see [LICENSE](LICENSE). Based on Cukes in Space! by Logan McGrath,
-Romain Manni-Bucau and contributors.
+MIT, see [LICENSE](LICENSE). Copyright (c) 2026 Thomas Bloder.
+Based on Cukes in Space! by Logan McGrath, Romain Manni-Bucau and contributors.
