@@ -1,0 +1,23 @@
+Feature: Cukes in my belly
+
+  Background:
+    Given my belly is empty
+
+  Scenario: Eating a few cukes
+    Given I have 3 cukes in my belly
+    When I eat 4 more cukes
+    Then my belly should contain 7 cukes
+
+  Scenario Outline: Eating cukes in several rounds
+    Given I have <start> cukes in my belly
+    When I eat <more> more cukes
+    Then my belly should contain <total> cukes
+
+    Examples:
+      | start | more | total |
+      | 0     | 1    | 1     |
+      | 5     | 5    | 10    |
+
+  @wip
+  Scenario: Filtered by the tag expression in arquillian.xml
+    Then my belly should contain 1000 cukes

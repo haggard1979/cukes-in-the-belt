@@ -20,11 +20,12 @@
     <module>core</module>
     <module>examples</module>
     <module>examples-weld</module>
+    <module>examples-wildfly</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
 
     <!-- dependency versions -->
     <cucumber.version>8.0.4</cucumber.version>
@@ -34,6 +35,8 @@
     <tomee.version>10.2.0</tomee.version>
     <arquillian-weld-embedded.version>4.0.1.Final</arquillian-weld-embedded.version>
     <weld.version>6.0.4.Final</weld.version>
+    <wildfly.version>42.0.0.Final</wildfly.version>
+    <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
 
     <!-- plugin versions -->
     <maven-compiler.version>3.14.1</maven-compiler.version>
@@ -43,6 +46,7 @@
     <maven-resources.version>3.3.1</maven-resources.version>
     <maven-install.version>3.1.4</maven-install.version>
     <maven-deploy.version>3.1.4</maven-deploy.version>
+    <maven-dependency.version>3.11.0</maven-dependency.version>
   </properties>
 
   <licenses>
@@ -122,6 +126,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
           <version>${maven-install.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

@@ -10,7 +10,7 @@ Version 2 requires:
 
 | | Version |
 |---|---|
-| Java | 17+ |
+| Java | 21+ |
 | Cucumber-JVM | 8.x (`io.cucumber`) |
 | JUnit | 5 (Jupiter) |
 | Arquillian | 1.10+ (`arquillian-junit5-container`) |
@@ -116,7 +116,7 @@ container injects into such instances), then Arquillian enriches them
 
 Prefer `@Inject` for session beans in glue classes: whether `@EJB` and
 `@Resource` are injected into non-contextual instances depends on the server
-(TomEE, for instance, does not). In the test class itself they always work.
+(WildFly does, TomEE does not). In the test class itself they always work.
 
 Glue classes don't have to be added to the deployment: CukeSpace adds the ones
 the deployment lacks.
@@ -189,6 +189,10 @@ Events (package `com.github.cukespace.api.event`): `BeforeScenario`,
   class using CDI and EJB, a Portuguese feature with separate glue, a
   `@RunAsClient` test calling a servlet over HTTP, tags configured in
   `arquillian.xml`.
+* `examples-wildfly`: WildFly 42 managed (separate JVM, servlet protocol). The
+  server is downloaded and unpacked by Maven (~250 MB on the first build):
+  steps in the test class, glue with `@EJB` and `@Resource`, an
+  `EnterpriseArchive`, a `@RunAsClient` test.
 * `examples-weld`: Weld embedded, `JavaArchive` deployments: steps in the test
   class, a German feature with glue in another package, failure reporting and
   Arquillian events.
