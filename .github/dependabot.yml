@@ -10,6 +10,25 @@ updates:
       # one PR per week for compatible updates, major versions separately
       maven-minor-and-patch:
         update-types: [minor, patch]
+    ignore:
+      # Cukes in the Belt targets Jakarta EE 10: core compiles against the EE 10 APIs
+      # so it uses nothing newer (CDI 4.1 = EE 11, CDI 5 = EE 12)
+      - dependency-name: jakarta.platform:jakarta.jakartaee-api
+        update-types: [version-update:semver-major]
+      - dependency-name: jakarta.enterprise:jakarta.enterprise.cdi-api
+        update-types: [version-update:semver-major]
+      # Weld 7 implements CDI 5 and needs its API; arquillian-weld-embedded follows Weld
+      - dependency-name: org.jboss.weld:weld-core-impl
+        update-types: [version-update:semver-major]
+      - dependency-name: org.jboss.arquillian.container:arquillian-weld-embedded
+        update-types: [version-update:semver-major]
+      # TomEE 11 is Jakarta EE 11
+      - dependency-name: org.apache.tomee:*
+        update-types: [version-update:semver-major]
+      # JUnit 5: Arquillian's JUnit 5 integration is built against JUnit 5.x and the
+      # version is passed on to users through the POM of core
+      - dependency-name: org.junit:junit-bom
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: github-actions
     directory: /
