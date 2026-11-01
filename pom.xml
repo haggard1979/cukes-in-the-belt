@@ -3,22 +3,22 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.cukespace</groupId>
-  <artifactId>cukespace-parent</artifactId>
+  <groupId>at.tbloder</groupId>
+  <artifactId>cukes-in-the-belt-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
-  <name>Cukes in Space! Parent</name>
-  <url>https://github.com/cukespace/cukespace</url>
+  <name>Cukes in the Belt Parent</name>
+  <url>https://github.com/haggard1979/cukes-in-the-belt</url>
 
   <description>
-    The Cukes in Space! project allows you to run Cucumber features against
-    the Jakarta EE container of your choice using Arquillian and JUnit 5.
+    Cukes in the Belt runs Cucumber features inside Jakarta EE containers
+    using Arquillian and JUnit 5. Based on Cukes in Space! (CukeSpace).
   </description>
 
   <modules>
     <module>core</module>
-    <module>examples</module>
+    <module>examples-tomee</module>
     <module>examples-weld</module>
     <module>examples-wildfly</module>
   </modules>
