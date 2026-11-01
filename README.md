@@ -1,250 +1,209 @@
 Cukes in Space!
 ===============
 
-Cukes in Space! allows you to deploy and run Cucumber features in the
-application server of your choice using the Arquillian test framework.
+Cukes in Space! runs [Cucumber][] features inside the Jakarta EE container of
+your choice using [Arquillian][] and JUnit 5. Step definitions are served by
+the container: they can use `@Inject`, `@EJB`, `@Resource`,
+`@ArquillianResource`, ...
 
-## Supported application servers:
+Version 2 requires:
 
-The following application servers are supported. The artifact
-```cukespace-core``` is required for all servers, and additional dependencies
-have been listed for each.
+| | Version |
+|---|---|
+| Java | 17+ |
+| Cucumber-JVM | 8.x (`io.cucumber`) |
+| JUnit | 5 (Jupiter) |
+| Arquillian | 1.10+ (`arquillian-junit5-container`) |
+| Jakarta EE | 10+ (`jakarta.*`) |
 
-# Quickstart
+JUnit 4, TestNG and `javax.*` are supported by the 1.x versions only, see
+[Migrating from 1.x](#migrating-from-1x).
 
-This quickstart assumes you're already very familiar with [Arquillian][] and
-[Cucumber-JVM][], and that you've set up your Maven.
-
-[Arquillian]: http://www.arquillian.org/
-[Cucumber-JVM]: http://www.github.com/cucumber/cucumber-jvm
-[JBoss repository]: https://community.jboss.org/wiki/MavenGettingStarted-Users
+[Arquillian]: https://arquillian.org/
+[Cucumber]: https://cucumber.io/docs/installation/java/
 
 ## Installation
 
-Before you start writing features, you'll want to pull down the source for
-Cukes in Space! and install it to your local repository using the following
-command:
-
-```mvn install```
-
-## Project Setup
-
-You'll want at least the following dependency in your pom.xml:
+```bash
+mvn install
+```
 
 ```xml
 <dependency>
     <groupId>com.github.cukespace</groupId>
     <artifactId>cukespace-core</artifactId>
-    <version>{VERSION}</version>
+    <version>2.0.0-SNAPSHOT</version>
     <scope>test</scope>
 </dependency>
 ```
 
-## Creating Features
+`cukespace-core` brings Cucumber (`cucumber-core`, `cucumber-java`), JUnit 5
+and `arquillian-junit5-container`. Add the Arquillian adapter of your
+container (WildFly, TomEE, Payara, Weld embedded, ...) as usual.
 
-All you have to do is to replace Arquillian runner by ```CukeSpace```, create the test deployment, and
-write your steps in your test class:
+## Writing features
+
+Extend `CukeSpaceTest`, create the deployment and write the steps directly in
+the test class:
 
 ```java
-package my.features;
+@CucumberOptions(features = "classpath:features/cukes-in-belly.feature")
+class CukesInBellyTest extends CukeSpaceTest {
 
-import cucumber.runtime.arquillian.junit.Cucumber;
-import my.features.domain.Belly;
-import my.features.glue.BellySteps;
-
-@RunWith(CukeSpace.class)
-public class CukesInBellyTest {
     @Deployment
-    public static Archive<?> createDeployment() {
+    static WebArchive deployment() {
         return ShrinkWrap.create(WebArchive.class)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-            .addAsResource("my/features/cukes.feature")
-            .addClass(Belly.class)
-            .addClass(BellySteps.class)
-            .addClass(CukesInBellyFeature.class);
+                .addClasses(Belly.class, CukeService.class);
     }
-    
-    @EJB
-    private CukeService service;
 
     @Inject
-    private CukeLocator cukeLocator;
+    Belly belly;
 
-    @When("^I persist my cuke$")
-    public void persistCuke() {
-        this.service.persist(this.cukeLocator.findCuke());
+    @EJB
+    CukeService service;
+
+    @Given("I have {int} cukes in my belly")
+    public void haveCukes(int cukes) {
+        belly.eat(cukes);
+    }
+
+    @When("I eat {int} more cukes")
+    public void eatMore(int cukes) {
+        service.eat(cukes);
+    }
+
+    @Then("my belly should contain {int} cukes")
+    public void checkCukes(int cukes) {
+        assertEquals(cukes, belly.getCukes());
     }
 }
 ```
 
-Arquillian will then package up all the necessary dependencies along with your
-test deployment and execute the feature in the application server. Your step
-definitions will also be serviced by Arquillian's awesome test enrichers, so
-your steps will have access to any resource supported by the Arquillian
-container you choose to use:
+`CukeSpaceTest` contributes one JUnit test, `Cucumber features`, which runs
+all scenarios. Arquillian executes it like any other test method: inside the
+container, or on the client with `@RunAsClient` / `@Deployment(testable = false)`.
+When some scenarios do not pass, the test fails with a `MultipleFailuresError`
+listing every failed scenario (`ScenarioFailedError`) and the snippets for
+undefined steps.
+
+If the test can't extend `CukeSpaceTest`, run the features yourself:
 
 ```java
-// clip
-@EJB
-private CukeService service;
-
-@Resource
-private Connection connection;
-
-@PersistenceContext
-private EntityManager entityManager;
-
-@Inject
-private CukeLocator cukeLocator;
-
-@When("^I persist my cuke$")
-public void persistCuke() {
-    this.entityManager.persist(this.cukeLocator.findCuke());
-}
-// clip
-``` 
-
-### Functional UI Testing with Arquillian Drone
-
-[This guide][] will help you get started with using the Arquillian Drone
-extension for functional testing.
-
-[This guide]: http://arquillian.org/guides/functional_testing_using_drone/
-
-To create features for functional UI testing, you first want to add all
-necessary Drone dependencies to your project's POM, then mark your deployment
-as untestable and inject a webdriver:
-
-```java
-// clip
-@Drone
-DefaultSelenium browser;
-
-@Deployment(testable = false)
-public static Archive<?> createDeployment() {
-    return ShrinkWrap.create(WebArchive.class)
-        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-        .addAsWebInfResource(new StringAsset("<faces-config version=\"2.0\"/>"), "faces-config.xml")
-        .addAsWebResource(new File("src/main/webapp/belly.xhtml"), "belly.xhtml")
-        .addClass(Belly.class)
-        .addClass(BellyController.class);
-}
-// clip
-```
-
-You can then access your Drone from any step definition.
-
-```java
-public class IrresistibleButtonSteps {
-    @Drone
-    private DefaultSelenium browser;
-    
-    @When("^I click on an irresistible button$")
-    public void click() {
-        this.browser.click("id=irresistible-button");
+@ExtendWith(ArquillianExtension.class)
+@CucumberOptions(features = "classpath:features/belly.feature")
+class BellyTest {
+    @Test
+    void features() {
+        CukeSpace.runFeatures(this);
     }
 }
 ```
 
-Be sure to remember to inject the webdriver into your test fixture, or you
-won't be able to inject it into any of your step definitions. You'll know when
-you've forgotten because you'll get the following error:
+### Glue classes
 
-```
-java.lang.IllegalArgumentException: Drone Test context should not be null
-```
+Steps and hooks are looked up in
 
-### Externalize some common features/steps
+* the test class (always),
+* the package of the test class, or the packages given in
+  `@CucumberOptions(glue = ...)` (replaces the default) or `extraGlue = ...`
+  (in addition to the default).
+
+Glue classes other than the test class are created once per scenario. When
+CDI is available they are created by the container as non-contextual
+instances (`@Inject`, `@PostConstruct`, `@PreDestroy` and whatever else the
+container injects into such instances), then Arquillian enriches them
+(`@ArquillianResource`, ...). Without CDI they need a no-argument constructor.
+
+Prefer `@Inject` for session beans in glue classes: whether `@EJB` and
+`@Resource` are injected into non-contextual instances depends on the server
+(TomEE, for instance, does not). In the test class itself they always work.
+
+Glue classes don't have to be added to the deployment: CukeSpace adds the ones
+the deployment lacks.
 
 ### Configuration
-#### Arquillian.xml
 
-Cuke in Space! comes with an arquillian extension. We already saw the reporting configuration but you can go a bit further.
-Here are the complete properties:
+`@CucumberOptions` (`com.github.cukespace.CucumberOptions`) supports
+`features`, `glue`, `extraGlue`, `tags`, `plugin`, `name`, `dryRun`,
+`monochrome`, `snippets` and `objectFactory`. Without features, the package
+of the test class is used (`classpath:com/example`). Without plugins,
+`pretty` is used.
 
-    <extension qualifier="cucumber">
-        <property name="report">true</property>
-        <property name="reportDirectory">target/cucumber-report</property>
-        <property name="options">--tags @foo</property>
-        <property name="featureHome">/home/test/features</property>
-        <property name="tempDir">target/custom/features</property>
-    </extension>
+Every option can be overridden with the usual [Cucumber properties][properties]
+(`cucumber.filter.tags`, `cucumber.plugin`, `cucumber.features`, ...). They are
+read from, by increasing priority:
 
-| Property name    | Value                                                                                     |
-| ---------------- |:-----------------------------------------------------------------------------------------:|
-| report           | boolean to activate the reporting                                                         |
-| reportDirectory | where to store the report on the filesystem                                               |
-| options          | cucumber options used when `cucumber.api.junit.Cucumber.Options` is not on the test class |
-| featureHome      | where to look for features (base path)                                                    |
-| tempDir          | where custom loaders dump their resources                                                 |
-| objectFactory | if default (plain new instance) implementation doesn't work for you add the object factory jar you use in the deployment and configure the class there (tip: "cdi" is a value value)|
+1. the `cucumber` extension in `arquillian.xml`,
+2. `cucumber.properties`,
+3. environment variables (`CUCUMBER_FILTER_TAGS`),
+4. system properties (`-Dcucumber.filter.tags=@smoke`).
 
-Important: objectFactory support is mainly for the getInstance() lookup, it is not recommanded to reuse
-cucumber-jvm implementation which would start/stop a container. This role is handled by arquillian already in CukeSpace and shouldn't be duplicated - can fail if you start the same container twice.
+```xml
+<extension qualifier="cucumber">
+    <property name="cucumber.filter.tags">not @wip</property>
+    <property name="cucumber.plugin">pretty, html:target/cucumber.html</property>
+</extension>
+```
 
-#### Reporting sample configuration
+The properties are evaluated on the client and shipped with the deployment,
+so they also apply to remote containers. File based plugins (`html:`,
+`json:`, `junit:`, ...) write on the machine running the features: with a
+remote server, use absolute paths or run the reports on the client.
 
-Cukespace supports some basic reporting in html format.
+[properties]: https://github.com/cucumber/cucumber-jvm/tree/main/cucumber-core#properties-environment-variables-system-options
 
-To activate it simply configure the cucumber arquillian extension in the file arquillian.xml :
+### Deployments
 
-      <extension qualifier="cucumber">
-        <property name="report">true</property>
-        <property name="reportDirectory">target/cucumber-report</property>
-      </extension>
+For a `WebArchive` or an `EnterpriseArchive`, CukeSpace adds to the archive
+holding the test class:
 
-The report file will be then logged. For instance:
+* the feature files, copied by the client (no classpath scanning in the
+  server, which is unreliable with VFS and nested archives),
+* the list of glue classes and the missing glue classes,
+* the Cucumber jars and the container side of CukeSpace.
 
-     INFO - Cucumber report available at /home/rmannibucau/dev/cukespacetest/target/cucumber-report/feature-overview.html
+A `JavaArchive` deployment is left as it is: it is used by embedded containers
+such as Weld embedded, which run with the class path of the test.
 
+### Arquillian events
 
-
-#### Annotations
-
-Cuke in Space! API annotations are in the package `cucumber.runtime.arquillian.api`.
-
-#### Features
-
-If you want to reuse some feature in multiple test you can specify it through @Features:
+Other Arquillian extensions can observe what Cucumber does, e.g. to take a
+screenshot after each step:
 
 ```java
-@Features("org/foo/bar/scenarii.feature") // can support multiple features too
-@RunWith(CukeSpace.class)
-public class MyFeatureTest {
-    ....
+public class Screenshots {
+    public void afterStep(@Observes AfterStep step) {
+        if ("FAILED".equals(step.getStatus())) {
+            // ...
+        }
+    }
 }
 ```
 
-#### Steps
+Events (package `com.github.cukespace.api.event`): `BeforeScenario`,
+`AfterScenario`, `BeforeStep`, `AfterStep`.
 
-If you want to reuse some step classes you can using the annotation @Glues:
+## Examples
 
-```java
-@Glues(MySteps.class) // can support multiple steps classes too
-@RunWith(CukeSpace.class)
-public class MyFeatureTest {
-    ....
-}
-```
+* `examples`: TomEE 10 embedded, `WebArchive` deployments: steps in the test
+  class using CDI and EJB, a Portuguese feature with separate glue, a
+  `@RunAsClient` test calling a servlet over HTTP, tags configured in
+  `arquillian.xml`.
+* `examples-weld`: Weld embedded, `JavaArchive` deployments: steps in the test
+  class, a German feature with glue in another package, failure reporting and
+  Arquillian events.
 
-##### @Tags
+## Migrating from 1.x
 
-`@Tags` let you filter features by tag.
-
-```java
-@Tags("@myTag") // can support multiple tags too
-@RunWith(CukeSpace.class)
-public class MyFeatureTest {
-    ....
-}
-```
-
-Note: you can also set tags adding them on the test JVM, for the client `"-Dcucumber.options=-t @myTag"`, for the server check your arquillian adapter,
-for TomEE for instance you can use: `"-Dtomee.properties=-Dcucumber.options=-t @myTag"`.
-
-#### @Cucumber.Options
-
-`@cucumber.api.junit.Cucumber.Options` from cucumber junit api (not in Cuke in Space! directly) is supporting in compatibility
-mode out of the box.
-
-It is used to create `cucumber.runtime.RuntimeOptions` when running cucumber and `features` and `tags` attributes are supported.
+| 1.x | 2.x |
+|---|---|
+| `@RunWith(CukeSpace.class)` / `@RunWith(ArquillianCucumber.class)` | `extends CukeSpaceTest`, or `@ExtendWith(ArquillianExtension.class)` + `CukeSpace.runFeatures(this)` |
+| TestNG `extends CukeSpace` | not supported anymore |
+| `@cucumber.api.CucumberOptions`, `@Features`, `@Glues`, `@Tags` | `@com.github.cukespace.CucumberOptions(features, glue, extraGlue, tags)` |
+| `cucumber.api.java.en.*`, `cucumber.api.java.*` | `io.cucumber.java.en.*`, `io.cucumber.java.*` |
+| regular expressions in step annotations | still supported, Cucumber expressions recommended |
+| `arquillian.xml`: `options`, `featureHome`, `tempDir`, `objectFactory` | Cucumber properties (`cucumber.filter.tags`, `cucumber.features`, `cucumber.object-factory`, ...) |
+| `arquillian.xml`: `report`, `reportDirectory`, `generateDocs` (cucumber-reporting, cukedoctor) | Cucumber plugins, e.g. `cucumber.plugin=html:target/cucumber.html` |
+| Arquillian Persistence integration (`persistenceEventsActivated`) | removed (the extension is not maintained) |
+| `@Lambda` / cucumber-java8 | removed |
+| `cucumber.runtime.arquillian.api.event.*` | `com.github.cukespace.api.event.*` |

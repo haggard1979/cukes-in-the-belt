@@ -3,66 +3,52 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-    <relativePath />
-  </parent>
-
   <groupId>com.github.cukespace</groupId>
   <artifactId>cukespace-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.6.8-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
 
   <name>Cukes in Space! Parent</name>
-  <url>https://github.com/lmcgrath/cukespace</url>
+  <url>https://github.com/cukespace/cukespace</url>
 
   <description>
     The Cukes in Space! project allows you to run Cucumber features against
-    the application server of your choice using the Arquillian test
-    framework.
+    the Jakarta EE container of your choice using Arquillian and JUnit 5.
   </description>
 
   <modules>
     <module>core</module>
     <module>examples</module>
-    <module>examples-testng</module>
+    <module>examples-weld</module>
   </modules>
 
   <properties>
-
-    <!-- project settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.source>1.7</project.build.source>
-    <project.build.target>1.7</project.build.target>
+    <maven.compiler.release>17</maven.compiler.release>
 
-    <!-- dependency and plugin versions -->
-    <shrinkwrap.version>1.2.0</shrinkwrap.version>
-    <arquillian.version>1.1.11.Final</arquillian.version>
-    <arquillian-drone.version>2.0.0.Final</arquillian-drone.version>
-    <cucumber-jvm.version>1.2.5</cucumber-jvm.version>
-    <hamcrest.version>1.1</hamcrest.version>
-    <junit.version>4.12</junit.version>
-    <maven-compiler.version>3.1</maven-compiler.version>
-    <maven-jar.version>2.3.1</maven-jar.version>
-    <maven-surefire.version>3.0.0-M5</maven-surefire.version>
-    <maven-war.version>2.6</maven-war.version>
-    <mockito.version>1.9.0</mockito.version>
-    <tomee.version>7.0.2</tomee.version> <!-- 8.0.8 has an OWB bug making arq deployment broken, upgrade after OWB 2.0.23 upgrade -->
+    <!-- dependency versions -->
+    <cucumber.version>8.0.4</cucumber.version>
+    <arquillian.version>1.10.2.Final</arquillian.version>
+    <junit.version>5.14.4</junit.version>
+    <jakartaee.version>10.0.0</jakartaee.version>
+    <tomee.version>10.2.0</tomee.version>
+    <arquillian-weld-embedded.version>4.0.1.Final</arquillian-weld-embedded.version>
+    <weld.version>6.0.4.Final</weld.version>
+
+    <!-- plugin versions -->
+    <maven-compiler.version>3.14.1</maven-compiler.version>
+    <maven-surefire.version>3.5.4</maven-surefire.version>
+    <maven-jar.version>3.4.2</maven-jar.version>
+    <maven-war.version>3.4.0</maven-war.version>
+    <maven-resources.version>3.3.1</maven-resources.version>
+    <maven-install.version>3.1.4</maven-install.version>
+    <maven-deploy.version>3.1.4</maven-deploy.version>
   </properties>
-
-  <scm>
-    <connection>scm:git:https://github.com/cukespace/cukespace.git</connection>
-    <developerConnection>scm:git:https://github.com/cukespace/cukespace.git</developerConnection>
-    <url>https://www.github.com/cukespace/cukespace</url>
-    <tag>HEAD</tag>
-  </scm>
 
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>http://www.opensource.org/licenses/mit-license</url>
+      <url>https://opensource.org/license/mit</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -70,171 +56,45 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.jboss.arquillian.junit</groupId>
-        <artifactId>arquillian-junit-container</artifactId>
-        <version>${arquillian.version}</version>
-        <scope>test</scope>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-bom</artifactId>
+        <version>${cucumber.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.arquillian.testng</groupId>
-        <artifactId>arquillian-testng-container</artifactId>
-        <version>${arquillian.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.arquillian.extension</groupId>
-        <artifactId>arquillian-drone-webdriver</artifactId>
-        <version>${arquillian-drone.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.arquillian.extension</groupId>
-        <artifactId>arquillian-drone-impl</artifactId>
-        <version>${arquillian-drone.version}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-spi</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>info.cukes</groupId>
-        <artifactId>cucumber-junit</artifactId>
-        <version>${cucumber-jvm.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>info.cukes</groupId>
-        <artifactId>cucumber-testng</artifactId>
-        <version>${cucumber-jvm.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>info.cukes</groupId>
-        <artifactId>cucumber-java</artifactId>
-        <version>${cucumber-jvm.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>info.cukes</groupId>
-        <artifactId>cucumber-java8</artifactId>
-        <version>${cucumber-jvm.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
         <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>6.8.21</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-api</artifactId>
-        <version>${shrinkwrap.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-all</artifactId>
-        <version>${hamcrest.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>${mockito.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>1.26</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.12.0</version>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${arquillian.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-api</artifactId>
+        <version>${jakartaee.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
-
   <build>
-
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.7</version>
-          <extensions>true</extensions>
-          <configuration>
-            <serverId>ossrh</serverId>
-            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-          </configuration>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler.version}</version>
-          <inherited>true</inherited>
           <configuration>
-            <encoding>${project.build.sourceEncoding}</encoding>
-            <source>${project.build.source}</source>
-            <target>${project.build.target}</target>
+            <parameters>true</parameters>
           </configuration>
         </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${maven-surefire.version}</version>
-          <inherited>true</inherited>
-          <executions>
-            <execution>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven-jar.version}</version>
-          <inherited>true</inherited>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -243,20 +103,33 @@
             <trimStackTrace>false</trimStackTrace>
           </configuration>
         </plugin>
-
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar.version}</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
           <version>${maven-war.version}</version>
-          <inherited>true</inherited>
-          <configuration>
-            <failOnMissingWebXml>false</failOnMissingWebXml>
-          </configuration>
         </plugin>
-
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven-install.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
-
   </build>
 
 </project>
