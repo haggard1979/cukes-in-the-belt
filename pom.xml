@@ -32,7 +32,7 @@
     <cucumber.version>8.0.4</cucumber.version>
     <arquillian.version>1.10.2.Final</arquillian.version>
     <junit.version>5.14.4</junit.version>
-    <jakartaee.version>10.0.0</jakartaee.version>
+    <jakartaee.version>11.0.0</jakartaee.version>
     <tomee.version>10.2.0</tomee.version>
     <arquillian-weld-embedded.version>4.0.1.Final</arquillian-weld-embedded.version>
     <weld.version>6.0.4.Final</weld.version>
