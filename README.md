@@ -1,6 +1,10 @@
 Cukes in the Belt
 =================
 
+<p align="center">
+  <img src="docs/cukes-in-the-belt.svg" width="480" alt="A jar of pickles from Nizhyn drifting through the asteroid belt">
+</p>
+
 [![Build](https://github.com/haggard1979/cukes-in-the-belt/actions/workflows/build.yml/badge.svg)](https://github.com/haggard1979/cukes-in-the-belt/actions/workflows/build.yml)
 
 Cukes in the Belt runs [Cucumber][] features inside the Jakarta EE container of
