@@ -43,7 +43,7 @@ Releases are published to Maven Central:
 ```
 
 For the current development version, build it with `mvn install` and use
-`1.0.0-SNAPSHOT`. How releases are made: [RELEASING.md](RELEASING.md).
+`1.1.0-SNAPSHOT`. How releases are made: [RELEASING.md](RELEASING.md).
 
 `cukes-in-the-belt-core` brings Cucumber (`cucumber-core`, `cucumber-java`), JUnit 5
 and `arquillian-junit5-container`. Add the Arquillian adapter of your

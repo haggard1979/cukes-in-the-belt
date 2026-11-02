@@ -40,8 +40,8 @@ jobs:
           java-version: '21'
           cache: maven
           server-id: central
-          server-username: MAVEN_CENTRAL_USERNAME
-          server-password: MAVEN_CENTRAL_PASSWORD
+          server-username-env-var: MAVEN_CENTRAL_USERNAME
+          server-password-env-var: MAVEN_CENTRAL_PASSWORD
 
       - name: Set version ${{ steps.version.outputs.version }}
         run: >
