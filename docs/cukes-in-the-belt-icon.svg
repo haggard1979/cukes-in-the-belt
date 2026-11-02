@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="256" height="256" role="img" aria-labelledby="cbi-title">
+  <title id="cbi-title">Cukes in the Belt</title>
+  <!-- Icon version of docs/cukes-in-the-belt.svg: the pickle jar from Nizhyn in the asteroid belt,
+       simplified for small sizes (no label text, no bumps, thicker strokes). -->
+  <style>
+    .star { fill: #f4f1e3; }
+    .planet { fill: #d9a873; }
+    .band { fill: #b4744a; }
+    .dust { fill: none; stroke: #c9b8a0; stroke-width: 12; stroke-linecap: round; opacity: 0.12; }
+    .rock { fill: #8b8076; }
+    .rock-shade { fill: #5a524b; }
+    .cuke { fill: #3d7a2c; }
+    .cuke-light { fill: none; stroke: #7aa94a; stroke-width: 3; stroke-linecap: round; }
+    .glass { fill: rgba(214, 236, 240, 0.22); stroke: rgba(232, 246, 248, 0.85); stroke-width: 3.5; }
+    .brine { fill: rgba(196, 210, 112, 0.5); }
+    .lid { fill: #d9a441; }
+    .lid-dark { stroke: #a5761f; stroke-width: 3; }
+    .label { fill: #f4ecd4; }
+    .label-line { fill: none; stroke: #b7402c; stroke-width: 2.6; stroke-dasharray: 4 3; }
+    .glint { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; opacity: 0.45; }
+  </style>
+  <defs>
+    <radialGradient id="cbi-space" cx=".3" cy=".25" r="1">
+      <stop offset="0" stop-color="#27305a"/>
+      <stop offset="1" stop-color="#0a0c1a"/>
+    </radialGradient>
+    <clipPath id="cbi-tile"><rect width="64" height="64" rx="14"/></clipPath>
+    <clipPath id="cbi-planet"><circle cx="58" cy="6" r="15"/></clipPath>
+    <clipPath id="cbi-jar"><path d="M-27-40Q-38-38-38-26V46Q-38 58-26 58H26Q38 58 38 46V-26Q38-38 27-40Z"/></clipPath>
+    <symbol id="cbi-cuke" viewBox="-10 -26 20 52">
+      <path class="cuke" d="M0-25C7-25 9-14 9 0S7 25 0 25-9 14-9 0-7-25 0-25z"/>
+      <path class="cuke-light" d="M-3.5-19C-5.5-7-5.5 7-3.5 19"/>
+    </symbol>
+    <symbol id="cbi-rock" viewBox="-12 -10 24 20">
+      <path class="rock" d="M-9-6-2-9.5 6-8 11-2 9 6 2 9.5-6 8-11 2z"/>
+      <path class="rock-shade" d="M11-2 9 6 2 9.5-6 8-11 2-4 4 3 3z"/>
+    </symbol>
+  </defs>
+  <g clip-path="url(#cbi-tile)">
+    <rect width="64" height="64" fill="url(#cbi-space)"/>
+    <g class="star">
+      <circle cx="8" cy="9" r=".8"/><circle cx="20" cy="5" r=".6"/><circle cx="6" cy="30" r=".6"/>
+      <circle cx="58" cy="40" r=".7"/><circle cx="10" cy="56" r=".7"/><circle cx="56" cy="58" r=".6"/>
+    </g>
+    <g clip-path="url(#cbi-planet)">
+      <circle class="planet" cx="58" cy="6" r="15"/>
+      <path class="band" d="M42 2q16 3 32-1v3q-16 4-32 1zM42 11q16 3 32-1v2q-16 3-32 1z"/>
+    </g>
+    <path class="dust" d="M-6 58C20 48 40 38 70 20"/>
+    <use href="#cbi-cuke" x="5" y="19" width="6" height="16" transform="rotate(58 8 27)"/>
+    <use href="#cbi-rock" x="47" y="44" width="11" height="9" transform="rotate(-20 52.5 48.5)"/>
+    <g transform="translate(31 36) scale(0.37) rotate(-9)">
+      <path class="glass" d="M-27-40Q-38-38-38-26V46Q-38 58-26 58H26Q38 58 38 46V-26Q38-38 27-40Z"/>
+      <g clip-path="url(#cbi-jar)">
+        <rect class="brine" x="-40" y="-31" width="80" height="92"/>
+        <use href="#cbi-cuke" x="-10" y="-26" width="20" height="52" transform="translate(-21 14) rotate(7)"/>
+        <use href="#cbi-cuke" x="-10" y="-26" width="20" height="52" transform="translate(-4 8) rotate(-5)"/>
+        <use href="#cbi-cuke" x="-10" y="-26" width="20" height="52" transform="translate(14 14) rotate(9)"/>
+        <use href="#cbi-cuke" x="-10" y="-26" width="20" height="52" transform="translate(0 47) rotate(84)"/>
+      </g>
+      <rect class="glass" x="-27" y="-46" width="54" height="7" rx="2"/>
+      <rect class="lid" x="-31" y="-60" width="62" height="16" rx="3"/>
+      <path class="lid-dark" d="M-20-57v10M-10-57v10M0-57v10M10-57v10M20-57v10"/>
+      <rect class="label" x="-31" y="6" width="62" height="28" rx="3"/>
+      <path class="label-line" d="M-26 12H26M-26 28H26"/>
+      <path class="glint" d="M-30-22Q-32 8-30 46"/>
+    </g>
+  </g>
+</svg>
