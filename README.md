@@ -239,6 +239,11 @@ Replace the dependency `com.github.cukespace:cukespace-core` by
 | `@Lambda` / cucumber-java8 | removed |
 | `cucumber.runtime.arquillian.api.event.*` | `at.tbloder.cukes.api.event.*` |
 
+## Support
+
+If you find Cukes in the Belt useful, you can buy me a coffee on
+[Ko-fi](https://ko-fi.com/thomasbloder). Thank you!
+
 ## License
 
 MIT, see [LICENSE](LICENSE). Copyright (c) 2026 Thomas Bloder.
